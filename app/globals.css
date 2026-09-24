@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --color-azul-noite: #0B1220;
+  --color-laranja-energia: #FF8A00;
+  --color-areia-clara: #F5F3EC;
+  --color-branco: #FFFFFF;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    background-color: var(--color-azul-noite);
+    color: var(--color-branco);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-laranja-energia);
+    color: var(--color-branco);
+  }
+}
+
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
