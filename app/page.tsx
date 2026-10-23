@@ -4,6 +4,7 @@ import { ProblemSection } from "@/components/sections/ProblemSection";
 import { VisionSection } from "@/components/sections/VisionSection";
 import { ActionSection } from "@/components/sections/ActionSection";
 import { SolutionsSection } from "@/components/sections/SolutionsSection";
+import { PeopleSection } from "@/components/sections/PeopleSection";
 
 export default function Home() {
   return (
@@ -15,7 +16,9 @@ export default function Home() {
         <VisionSection />
         <ActionSection />
         <SolutionsSection />
+        <PeopleSection />
       </main>
     </>
   );
 }
+
