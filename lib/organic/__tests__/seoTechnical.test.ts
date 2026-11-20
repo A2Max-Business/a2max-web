@@ -263,6 +263,42 @@ test("SEO Técnico & Sitemap XML Suite", async (t) => {
     });
     assert.equal(taintedProd, DEFAULT_PRODUCTION_DOMAIN, "Produção nunca pode adotar localhost");
 
+    // Vercel Preview resolution via VERCEL_URL
+    const vercelPreviewOrigin = getSiteOrigin({
+      VERCEL: "1",
+      VERCEL_ENV: "preview",
+      VERCEL_URL: "a2max-web-git-feat-preview.vercel.app",
+    });
+    assert.equal(
+      vercelPreviewOrigin,
+      "https://a2max-web-git-feat-preview.vercel.app",
+      "Preview na Vercel deve resolver VERCEL_URL com https://"
+    );
+
+    // Vercel Preview without VERCEL_URL must fallback to official production domain, NEVER localhost
+    const vercelPreviewFallback = getSiteOrigin({
+      VERCEL: "1",
+      VERCEL_ENV: "preview",
+    });
+    assert.equal(
+      vercelPreviewFallback,
+      DEFAULT_PRODUCTION_DOMAIN,
+      "Preview remoto sem VERCEL_URL deve adotar domínio de produção, nunca localhost"
+    );
+
+    // Rejection of localhost in Vercel Preview even if mistakenly passed in NEXT_PUBLIC_SITE_URL
+    const taintedPreview = getSiteOrigin({
+      VERCEL: "1",
+      VERCEL_ENV: "preview",
+      NEXT_PUBLIC_SITE_URL: "http://localhost:3001",
+      VERCEL_URL: "a2max-web-git-feat-preview.vercel.app",
+    });
+    assert.equal(
+      taintedPreview,
+      "https://a2max-web-git-feat-preview.vercel.app",
+      "Vercel Preview deve rejeitar NEXT_PUBLIC_SITE_URL localhost e usar VERCEL_URL"
+    );
+
     // Social image absolute resolution
     const absoluteImg = resolveAbsoluteSocialImage("https://cdn.example.com/capa.png");
     assert.equal(absoluteImg, "https://cdn.example.com/capa.png");

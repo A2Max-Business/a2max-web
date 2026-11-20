@@ -26,6 +26,18 @@ export function isProductionEnv(env: Record<string, string | undefined> = proces
   return env.NODE_ENV === "production" || env.VERCEL_ENV === "production";
 }
 
+/**
+ * Checks whether the code is running in a remote deployment (Vercel, CI or production).
+ */
+export function isRemoteDeployment(env: Record<string, string | undefined> = process.env): boolean {
+  return (
+    env.VERCEL === "1" ||
+    Boolean(env.VERCEL_ENV) ||
+    Boolean(env.VERCEL_URL) ||
+    env.NODE_ENV === "production"
+  );
+}
+
 export interface RobotsMetadataOptions {
   env?: Record<string, string | undefined>;
   forceNoIndex?: boolean;
@@ -79,26 +91,65 @@ export function getRobotsMetadata(options?: RobotsMetadataOptions): {
 }
 
 /**
+ * Helper to ensure a domain or URL has a protocol (defaults to https://).
+ */
+function normalizeHttpsUrl(domainOrUrl: string): string {
+  const clean = domainOrUrl.trim().replace(/\/+$/, "");
+  if (clean.startsWith("http://") || clean.startsWith("https://")) {
+    return clean;
+  }
+  return `https://${clean}`;
+}
+
+/**
  * Resolves the absolute public origin of the site.
  * In production: guarantees https://www.a2max.com.br (or configured production NEXT_PUBLIC_SITE_URL).
- * In development / test: falls back to localhost without polluting production contracts.
+ * In preview: uses VERCEL_URL (https://<preview-domain>) or official production domain.
+ * In local development / test: falls back to http://localhost:3001.
+ * Strict invariant: Never returns localhost in any remote deployment (Vercel, preview or production).
  */
 export function getSiteOrigin(env: Record<string, string | undefined> = process.env): string {
   const configured = env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
+  const isRemote = isRemoteDeployment(env);
 
+  // 1. If NEXT_PUBLIC_SITE_URL is explicitly configured:
+  if (configured) {
+    const isLocalhost = configured.includes("localhost") || configured.includes("127.0.0.1");
+
+    // In remote deployments, reject localhost configuration to prevent accidental leakage
+    if (!isLocalhost) {
+      return normalizeHttpsUrl(configured);
+    }
+
+    // In local dev/test without remote flags, allow localhost
+    if (!isRemote) {
+      return configured.startsWith("http") ? configured : `http://${configured}`;
+    }
+  }
+
+  // 2. Production: strictly official production domain
   if (isProductionEnv(env)) {
-    // If configured in production, ensure it is not localhost or loopback
-    if (configured && !configured.includes("localhost") && !configured.includes("127.0.0.1")) {
-      return configured.startsWith("http") ? configured : `https://${configured}`;
+    return DEFAULT_PRODUCTION_DOMAIN;
+  }
+
+  // 3. Vercel Preview / Staging
+  if (isPreviewEnv(env)) {
+    if (env.VERCEL_URL) {
+      return normalizeHttpsUrl(env.VERCEL_URL);
+    }
+    // Remote preview without VERCEL_URL fallback
+    return DEFAULT_PRODUCTION_DOMAIN;
+  }
+
+  // 4. Any other remote deployment on Vercel
+  if (env.VERCEL === "1" || env.VERCEL_URL) {
+    if (env.VERCEL_URL) {
+      return normalizeHttpsUrl(env.VERCEL_URL);
     }
     return DEFAULT_PRODUCTION_DOMAIN;
   }
 
-  // Non-production / Local development / Preview
-  if (configured) {
-    return configured.startsWith("http") ? configured : `http://${configured}`;
-  }
-
+  // 5. Local development fallback
   return DEFAULT_LOCAL_ORIGIN;
 }
 
