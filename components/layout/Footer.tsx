@@ -42,7 +42,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-xs sm:text-sm text-slate-400">
               <li>
                 <Link
-                  href="#a-a2max"
+                  href="/#a-a2max"
                   className="hover:text-[#FF8A00] transition-colors focus:outline-none focus:text-[#FF8A00]"
                 >
                   A A2Max
@@ -50,7 +50,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#action"
+                  href="/#action"
                   className="hover:text-[#FF8A00] transition-colors focus:outline-none focus:text-[#FF8A00]"
                 >
                   Metodologia A.C.T.I.O.N.
@@ -58,7 +58,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#solucoes"
+                  href="/#solucoes"
                   className="hover:text-[#FF8A00] transition-colors focus:outline-none focus:text-[#FF8A00]"
                 >
                   Soluções Estruturadas
@@ -66,7 +66,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#resultados"
+                  href="/#resultados"
                   className="hover:text-[#FF8A00] transition-colors focus:outline-none focus:text-[#FF8A00]"
                 >
                   Resultados & Evidências
@@ -74,7 +74,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#inteligencia"
+                  href="/#inteligencia"
                   className="hover:text-[#FF8A00] transition-colors focus:outline-none focus:text-[#FF8A00]"
                 >
                   Ecossistema & Especialidades
@@ -82,10 +82,18 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#diagnostico"
+                  href="/#diagnostico"
                   className="hover:text-[#FF8A00] transition-colors focus:outline-none focus:text-[#FF8A00]"
                 >
                   Diagnóstico Empresarial
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="hover:text-[#FF8A00] transition-colors focus:outline-none focus:text-[#FF8A00]"
+                >
+                  Blog & Inteligência
                 </Link>
               </li>
             </ul>

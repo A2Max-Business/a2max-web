@@ -8,6 +8,7 @@ import { SolutionsSection } from "@/components/sections/SolutionsSection";
 import { PeopleSection } from "@/components/sections/PeopleSection";
 import { ResultsSection } from "@/components/sections/ResultsSection";
 import { EcosystemSection } from "@/components/sections/EcosystemSection";
+import { BlogShowcaseSection } from "@/components/sections/BlogShowcaseSection";
 import { DiagnosisSection } from "@/components/sections/DiagnosisSection";
 
 export default function Home() {
@@ -23,6 +24,7 @@ export default function Home() {
         <PeopleSection />
         <ResultsSection />
         <EcosystemSection />
+        <BlogShowcaseSection />
         <DiagnosisSection />
       </main>
       <Footer />
